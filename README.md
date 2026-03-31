@@ -1,19 +1,28 @@
 # gorilli-skills
 
-Monorepo for all ClawhHub-published Claude skills authored under the Gorilli brand.
+Claude skills built by [Gorilli](https://gorilli.io), published on [ClawhHub](https://clawhub.ai/luduvigo).
 
-## Quick Start
+Skills are prompt-based extensions for Claude — drop them into any Claude Code project to give your AI assistant focused, repeatable workflows. Think of them as reusable playbooks: structured instructions that tell Claude exactly how to approach a specific type of task.
 
+---
+
+## Published Skills
+
+### [linear-ticket-creator](https://clawhub.ai/luduvigo/linear-ticket-creator)
+
+Generate well-structured Linear tickets from bugs, features, and improvements. Explores the codebase to auto-populate technical notes, acceptance criteria, and scope boundaries.
+
+**Install:**
 ```bash
-# Validate a skill
-python scripts/validate_skill.py skills/<skill-name>
-
-# Package a skill into a .skill file
-python scripts/package_skill.py skills/<skill-name>
-
-# Bump version (patch | minor | major)
-python scripts/bump_version.py skills/<skill-name> minor
+clawhub install linear-ticket-creator
 ```
+
+**Use:**
+> "Create a ticket: users can't reset their password if their email has uppercase letters"
+
+Claude will analyze the input, explore your codebase for relevant files, draft a complete ticket with context, steps to reproduce, acceptance criteria, and technical notes — then ask targeted follow-up questions before finalizing.
+
+---
 
 ## Repo Structure
 
@@ -30,31 +39,44 @@ gorilli-skills/
 └── dist/                     # Git-ignored; built .skill files
 ```
 
-## Skill Folder Layout
+Each skill folder:
 
 ```
 skills/<skill-name>/
-├── SKILL.md          # Required. YAML frontmatter + instructions.
-├── evals/            # Test cases (excluded from packaging)
+├── SKILL.md       # Required. YAML frontmatter + instructions.
+├── evals/         # Test cases (excluded from packaging)
 │   └── evals.json
-├── scripts/          # Optional. Helpers bundled into the skill.
-├── references/       # Optional. Markdown docs loaded on demand.
-└── assets/           # Optional. Templates, fonts, icons.
+├── scripts/       # Optional. Helpers bundled into the skill.
+├── references/    # Optional. Markdown docs loaded on demand.
+└── assets/        # Optional. Templates, fonts, icons.
 ```
 
-## Creating a New Skill
+## Development Workflow
 
 ```bash
+# Start from the template
 cp -r skills/_template skills/<new-skill-name>
+
+# Validate
+python3 scripts/validate_skill.py skills/<skill-name>
+
+# Package
+python3 scripts/package_skill.py skills/<skill-name>
+
+# Bump version
+python3 scripts/bump_version.py skills/<skill-name> minor
+
+# Publish
+clawhub publish skills/<skill-name> --version <version> --changelog "..."
 ```
 
-Edit `SKILL.md`, add eval cases, then validate and package. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
 
 ## Versioning
 
-Each skill is versioned independently with semver. Git tags use `<skill-name>@<version>`.
+Each skill is versioned independently with semver. Git tags follow `<skill-name>@<version>`.
 
-| Change type | Bump |
+| Change | Bump |
 |---|---|
 | Fix wording, typo | PATCH |
 | New section, examples, reference files | MINOR |
