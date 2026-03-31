@@ -1,0 +1,75 @@
+name: Publish to ClawhHub
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Extract skill name from release tag
+        id: tag
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          SKILL_NAME="${TAG%@*}"
+          VERSION="${TAG#*@}"
+          echo "skill_name=$SKILL_NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Download .skill artifact from release
+        run: |
+          SKILL_NAME="${{ steps.tag.outputs.skill_name }}"
+          gh release download "${{ github.event.release.tag_name }}" \
+            --pattern "${SKILL_NAME}.skill" \
+            --dir dist/
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute SHA-256 and update catalog
+        run: |
+          SKILL_NAME="${{ steps.tag.outputs.skill_name }}"
+          VERSION="${{ steps.tag.outputs.version }}"
+          CHECKSUM=$(sha256sum "dist/${SKILL_NAME}.skill" | cut -d' ' -f1)
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          python3 -c "
+          import json, sys
+          with open('catalog.json', 'r') as f:
+              catalog = json.load(f)
+          catalog['updated_at'] = '${TIMESTAMP}'
+          for skill in catalog['skills']:
+              if skill['name'] == '${SKILL_NAME}':
+                  skill['version'] = '${VERSION}'
+                  skill['sha256'] = '${CHECKSUM}'
+                  skill['published_at'] = '${TIMESTAMP}'
+                  break
+          with open('catalog.json', 'w') as f:
+              json.dump(catalog, f, indent=2)
+              f.write('\n')
+          "
+
+      - name: Commit updated catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add catalog.json
+          git diff --staged --quiet || git commit -m "chore: update catalog for ${{ github.event.release.tag_name }}"
+          git push
+
+      - name: Publish to ClawhHub
+        run: |
+          SKILL_NAME="${{ steps.tag.outputs.skill_name }}"
+          echo "TODO: POST dist/${SKILL_NAME}.skill to ClawhHub registry"
+          # curl -X POST https://api.clawhhub.com/v1/skills/publish \
+          #   -H "Authorization: Bearer ${{ secrets.CLAWHUB_TOKEN }}" \
+          #   -F "skill=@dist/${SKILL_NAME}.skill" \
+          #   -F "catalog=@catalog.json"
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}

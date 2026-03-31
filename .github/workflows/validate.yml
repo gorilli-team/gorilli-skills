@@ -1,0 +1,40 @@
+name: Validate Skills
+
+on:
+  pull_request:
+    paths:
+      - 'skills/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Find changed skill folders
+        id: changed
+        run: |
+          SKILLS=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} \
+            | grep '^skills/' \
+            | cut -d'/' -f1-2 \
+            | sort -u \
+            | grep -v '^skills/_template$' || true)
+          echo "skills<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$SKILLS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Validate each changed skill
+        run: |
+          FAILED=0
+          while IFS= read -r skill_dir; do
+            [ -z "$skill_dir" ] && continue
+            echo "--- Validating $skill_dir ---"
+            if ! python scripts/validate_skill.py "$skill_dir"; then
+              FAILED=1
+            fi
+          done <<< "${{ steps.changed.outputs.skills }}"
+          exit $FAILED
