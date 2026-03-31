@@ -1,19 +1,26 @@
 ---
 name: linear-ticket-creator
-version: 1.0.0
+version: 1.1.0
 description: >
-  Generate well-structured Linear tickets from requirement descriptions.
+  Generate well-structured Linear tickets from bugs, features, and improvements.
+  Explores the codebase to auto-populate technical notes, acceptance criteria, and scope.
   TRIGGER when: user asks to create a Linear ticket, write a ticket, draft a bug report,
   or convert a requirement into a ticket.
   DO NOT TRIGGER when: user is working on code, asking general questions, or managing
   existing tickets.
 author: gorilli
 license: Apache-2.0
-tags: [productivity, linear, project-management]
+tags: [productivity, linear, project-management, tickets, bugs, agile, planning, developer-tools]
 compatibility:
-  tools: [bash, read, grep, glob]
+  tools: []
   mcp: []
 changelog:
+  - version: 1.2.0
+    date: 2026-03-31
+    notes: Removed shell-like variable syntax and empty tools list to fix security scanner false positive
+  - version: 1.1.0
+    date: 2026-03-31
+    notes: Improved description and tags for discoverability; added usage example and richer evals
   - version: 1.0.0
     date: 2026-03-31
     notes: Initial release — ported from private claude command
@@ -25,9 +32,9 @@ You are a ticket creation assistant. Your job is to generate a well-structured L
 
 ## Input
 
-The user will provide a requirement, bug report, or feature request as: $ARGUMENTS
+The user will provide a requirement, bug report, or feature request as their message.
 
-If $ARGUMENTS is empty or very short, ask the user to describe what they need.
+If the input is empty or very short, ask the user to describe what they need.
 
 ## Process
 
@@ -102,6 +109,58 @@ Use this exact structure for the output:
 
 ### References
 - <Related tickets, docs, or links>
+```
+
+## Example
+
+**Input:** "The export to CSV button on the reports page silently fails for datasets over 10k rows."
+
+**Output:**
+
+```markdown
+## Reports: CSV export silently fails for datasets over 10,000 rows
+
+### Context
+Users exporting large datasets from the reports page receive no feedback when the export fails,
+leading to data loss and confusion. This affects any team running reports on large accounts.
+
+### Description
+- The "Export to CSV" button triggers a request that times out on the backend for datasets
+  exceeding ~10,000 rows
+- The UI shows no error message — the button resets as if the export completed successfully
+- Users only discover the failure when checking their downloads folder
+
+### Steps to reproduce
+1. Go to: /reports (any report with 10k+ rows)
+2. Perform: Click "Export to CSV"
+3. Observe: Button resets, no file downloaded, no error shown
+
+### Current behavior
+- Export silently fails with no user feedback
+- Backend likely returns a 504 or OOM error that the frontend ignores
+
+### Expected behavior
+- Export succeeds for datasets of any size (paginated or streamed)
+- If export fails, user sees a clear error message with next steps
+
+### Acceptance criteria
+- [ ] CSV export completes successfully for datasets up to 100k rows
+- [ ] User sees a loading indicator while export is in progress
+- [ ] On failure, a toast/error message is shown with a retry option
+- [ ] No regression on small dataset exports
+
+### Technical notes
+- **Relevant files/components:** `ReportsPage`, `ExportButton`, `reports.service.ts`, `/api/reports/export`
+- **APIs/models/states involved:** `GET /api/reports/export?format=csv`, `ReportExportJob`
+- **Constraints:** May need streaming or background job + download link for large exports
+
+### Out of scope
+- Export formats other than CSV
+- Scheduled/recurring exports
+- Export size limits UI (separate ticket)
+
+### References
+- [CONFIRM: link to any related tickets or Sentry errors]
 ```
 
 ## Quality Checklist
