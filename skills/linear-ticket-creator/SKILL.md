@@ -15,12 +15,9 @@ compatibility:
   tools: []
   mcp: []
 changelog:
-  - version: 1.2.0
-    date: 2026-03-31
-    notes: Removed shell-like variable syntax and empty tools list to fix security scanner false positive
   - version: 1.1.0
     date: 2026-03-31
-    notes: Improved description and tags for discoverability; added usage example and richer evals
+    notes: Removed shell-like variable syntax and empty tools list to fix security scanner false positive
   - version: 1.0.0
     date: 2026-03-31
     notes: Initial release — ported from private claude command

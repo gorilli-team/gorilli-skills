@@ -4,7 +4,7 @@
   "skills": [
     {
       "name": "linear-ticket-creator",
-      "version": "1.2.0",
+      "version": "1.1.0",
       "description": "Generate well-structured Linear tickets from requirement descriptions. Analyzes the codebase, drafts a ticket using a structured template, and iterates with follow-up questions.",
       "tags": ["productivity", "linear", "project-management"],
       "dist": "dist/linear-ticket-creator.skill",
