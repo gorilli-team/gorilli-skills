@@ -1,0 +1,8 @@
+{
+  "evals": [
+    {
+      "prompt": "Example user prompt that should trigger this skill",
+      "expected_behavior": "Description of what the skill should produce"
+    }
+  ]
+}

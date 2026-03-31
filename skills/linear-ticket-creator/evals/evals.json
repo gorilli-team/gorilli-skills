@@ -1,0 +1,20 @@
+{
+  "evals": [
+    {
+      "prompt": "Create a ticket: the login page returns a 500 error when the user enters an email with a + character",
+      "expected_behavior": "Should generate a bug ticket with steps to reproduce, identify auth-related files in the codebase, and include acceptance criteria for handling special characters in emails"
+    },
+    {
+      "prompt": "Write a Linear ticket for adding dark mode support to the settings page",
+      "expected_behavior": "Should generate a feature request ticket with clear acceptance criteria, identify relevant UI components and theme-related files, and define out-of-scope items"
+    },
+    {
+      "prompt": "Draft a ticket: improve the API response time for the /users endpoint, it's taking over 3 seconds",
+      "expected_behavior": "Should generate an improvement ticket, explore the users endpoint code, identify potential bottlenecks in technical notes, and set measurable acceptance criteria for response time"
+    },
+    {
+      "prompt": "Create a ticket for updating the onboarding flow to include a company name field",
+      "expected_behavior": "Should generate a feature request, identify onboarding-related components and database models, include acceptance criteria for validation and edge cases, and mark unknowns with [CONFIRM]"
+    }
+  ]
+}
