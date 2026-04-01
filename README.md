@@ -22,6 +22,20 @@ clawhub install linear-ticket-creator
 
 Claude will analyze the input, explore your codebase for relevant files, draft a complete ticket with context, steps to reproduce, acceptance criteria, and technical notes — then ask targeted follow-up questions before finalizing.
 
+### [weekly-update](https://clawhub.ai/luduvigo/weekly-update)
+
+Transform raw notes, bullet points, or stream-of-consciousness input into a structured personal weekly update across all active projects.
+
+**Install:**
+```bash
+clawhub install weekly-update
+```
+
+**Use:**
+> "Generate my weekly update — shipped the Linear integration, still working on the Slack notifier, had a slow day Thursday."
+
+Claude groups activity by project, separates done from in-progress, surfaces concrete next actions, and adds a single honest closing thought from the week.
+
 ---
 
 ## Repo Structure
