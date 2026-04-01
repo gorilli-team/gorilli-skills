@@ -14,8 +14,8 @@
     {
       "name": "weekly-update",
       "version": "1.1.0",
-      "description": "Transform raw weekly activity notes into a clean, organized personal weekly update covering all active projects.",
-      "tags": ["productivity", "weekly-update", "notes", "planning", "journaling", "builder"],
+      "description": "Generate a structured weekly update from session logs and raw notes. Automatically pulls activity from OpenClaw sessions, groups by project, separates done from in-progress, and outputs a concise builder-style summary — what got done, what's next, and one honest takeaway.",
+      "tags": ["productivity", "weekly-update", "standup", "status-report", "notes", "planning", "journaling", "builder", "session-logs"],
       "dist": "dist/weekly-update.skill",
       "sha256": "",
       "published_at": ""
